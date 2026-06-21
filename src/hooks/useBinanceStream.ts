@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { BinanceTickerData } from '../types/telemetry';
-import { useMarketStore } from './useMarketStore';
+import { useMarketStore } from '../store/useMarketStore';
 
 export const useBinanceStream = () => {
   useEffect(() => {
