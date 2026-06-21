@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import type { BinanceTickerData } from './types/telemetry';
 import { useBinanceStream } from './hooks/useBinanceStream';
 
