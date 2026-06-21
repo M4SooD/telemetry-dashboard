@@ -1,21 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import type { BinanceTickerData } from '../types/telemetry';
+import { useMarketStore } from './useMarketStore';
 
-export const useBinanceStream = (onTick: (data: BinanceTickerData) => void) => {
-  const savedCallback = useRef(onTick);
-
+export const useBinanceStream = () => {
   useEffect(() => {
-    savedCallback.current = onTick;
-  }, [onTick]);
+    const updateAsset = useMarketStore.getState().updateAsset;
 
-  useEffect(() => {
-    const wsUrl =
-      'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker/ethusdt@ticker/solusdt@ticker';
+    const streams =
+      'btcusdt@ticker/ethusdt@ticker/solusdt@ticker/bnbusdt@ticker/xrpusdt@ticker';
+    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
     const ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-      console.log('[Binance WS] Pipeline established');
-    };
+    ws.onopen = () => console.log('[Binance WS] Connected to Global Store');
 
     ws.onmessage = (event) => {
       try {
@@ -32,7 +28,7 @@ export const useBinanceStream = (onTick: (data: BinanceTickerData) => void) => {
             eventTime: raw.E,
           };
 
-          savedCallback.current(tickerData);
+          updateAsset(tickerData);
         }
       } catch (error) {
         console.error('[Binance WS] Parse error', error);
